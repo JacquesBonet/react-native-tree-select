@@ -168,8 +168,14 @@ export default class TreeSelect extends Component {
       <View style={[styles.collapseIcon, collapseIcon]} />;
   };
 
+  _collapseNeigbour( item) {
+    const routes = this._find(data, item.parentId);
+
+    routes.map(neigbour => neigbour !== item && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
+  }
+
   _renderRow = ({ item }) => {
-    const { currentNode } = this.state;
+    const { currentNode, searchValue } = this.state;
     const { isShowTreeId = false, selectedItemStyle, itemStyle, treeNodeStyle, selectType = 'single', leafCanBeSelected } = this.props;
     const { backgroudColor, fontSize, color } = itemStyle && itemStyle;
     const openIcon = treeNodeStyle && treeNodeStyle.openIcon;
@@ -179,6 +185,9 @@ export default class TreeSelect extends Component {
     const selectedFontSize = selectedItemStyle && selectedItemStyle.fontSize;
     const selectedColor = selectedItemStyle && selectedItemStyle.color;
     const isCurrentNode = selectType === 'multiple' ? currentNode.includes(item.id) : (currentNode === item.id);
+
+    if (!item.name.match( searchValue))
+      return null;
 
     if (item && item.children && item.children.length) {
       const isOpen = this.state.nodesStatus && this.state.nodesStatus.get(item && item.id) || false;
@@ -259,7 +268,7 @@ export default class TreeSelect extends Component {
           autoCorrect={false}
           blurOnSubmit
           clearButtonMode="while-editing"
-          placeholder="搜索节点"
+          placeholder="Filter"
           placeholderTextColor="#e9e5e1"
           onChangeText={(text) => this._onChangeText('searchValue', text)}
         />
@@ -273,9 +282,7 @@ export default class TreeSelect extends Component {
     const { data } = this.props;
     return (
       <View style={styles.container}>
-        {/*{*/}
-        {/*this._renderSearchBar()*/}
-        {/*}*/}
+        this._renderSearchBar()
         <FlatList
           keyExtractor={(item, i) => i.toString()}
           style={{ flex: 1, marginVertical: 5, paddingHorizontal: 15 }}
