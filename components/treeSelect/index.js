@@ -124,21 +124,6 @@ export default class TreeSelect extends Component {
     });
   };
 
-  expend = ({ e, item }) => { // eslint-disable-line
-    const { data, selectType, leafCanBeSelected } = this.props;
-    const { currentNode } = this.state;
-    const routes = this._find(data, item.id);
-    this.setState((state) => {
-      const nodesStatus = new Map(state.nodesStatus);
-      nodesStatus.set(item && item.id, true); // toggle
-
-      return { nodesStatus };
-    }, () => {
-      const { onClick } = this.props;
-      onClick && onClick({ item, routes, currentNode: this.state.currentNode });
-    });
-  };
-
   _onClickLeaf = ({ e, item }) => { // eslint-disable-line
     const { onClickLeaf, onClick, selectType, leafCanBeSelected } = this.props;
     const { data } = this.props;
@@ -187,6 +172,11 @@ export default class TreeSelect extends Component {
       <View style={[styles.collapseIcon, collapseIcon]} />;
   };
 
+  /**
+   * When an item is expended, collapse the previous item
+   * @param item
+   * @private
+   */
   _collapseNeigbour( item) {
     const { data } = this.props;
     let routes = this._find(data, item);
@@ -196,15 +186,38 @@ export default class TreeSelect extends Component {
           ? routes[routes.length - 1]
           : []
 
-    parent && parent.map(neigbour => neigbour !== item && neigbour.children && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
+    parent && parent.map(neigbour => {
+      if (neigbour !== item)
+        return;
+
+      if (!neigbour.children || !neigbour.children.length)
+        return;
+
+      const nodesStatus = new Map(this.state.nodesStatus);
+      nodesStatus.set(item && item.id, !nodesStatus.get(item && item.id)); // toggle
+
+      this.setState((state) => {
+        this.setState( {
+          nodesStatus,
+        })
+      });
+    });
   }
 
+  /**
+   * Say if a subelement match the filter criteria
+   * @param item
+   * @returns {RegExpMatchArray | Promise<Response | undefined> | * | boolean}
+   */
   matchStackFilter( item) {
     const { searchValue } = this.state;
 
     return item.name.match(searchValue) || (item.children && item.children.reduce( (acc, child) => acc || this.matchStackFilter(child), false))
   }
 
+  /**
+   * Set status to nodes matching criteria
+   */
   getRootFilters() {
     const { searchValue } = this.state;
     const {data} = this.props;
