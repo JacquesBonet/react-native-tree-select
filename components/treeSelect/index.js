@@ -169,13 +169,17 @@ export default class TreeSelect extends Component {
   };
 
   _collapseNeigbour( item) {
-    const routes = this._find(data, item.id);
+    const routes = this._find(data, item.parentId);
 
     routes[routes.length - 1].children.map(neigbour => neigbour !== item && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
   }
 
+  showRows( items) {
+    return items.reduce( (acc, child) => acc || this.showRow(child), false)
+  }
+
   showRow( item) {
-    return item.name.match(searchValue) || (item.children && item.children.reduce( (acc, child) => acc || this.showRow(child), false))
+    return item.name.match(searchValue) || (item.children && item.children.reduce( (acc, child) => acc || this.showRows(child), false))
   }
 
   _renderRow = ({ item }) => {
