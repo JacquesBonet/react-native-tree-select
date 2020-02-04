@@ -188,12 +188,11 @@ export default class TreeSelect extends Component {
 
   _collapseNeigbour( item) {
     const { data } = this.props;
-    const routes = this._find(data, item);
+    let routes = this._find(data, item);
 
-    if (!routes.length)
-      return;
-
-    const {children = []} = routes[routes.length - 1];
+    const {children = []} = routes.length
+    ? routes[routes.length - 1]
+    : data;
 
     children.map(neigbour => neigbour !== item && neigbour.children && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
   }
@@ -300,7 +299,7 @@ export default class TreeSelect extends Component {
     this.setState({
       [key]: value
     });
-    getRootFilters();
+    this.getRootFilters();
   };
 
   _renderSearchBar = () => {
