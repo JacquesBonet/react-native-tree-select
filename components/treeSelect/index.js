@@ -187,7 +187,7 @@ export default class TreeSelect extends Component {
           : []
 
     parent && parent.map(neigbour => {
-      if (neigbour !== item)
+      if (neigbour === item)
         return;
 
       if (!neigbour.children || !neigbour.children.length)
