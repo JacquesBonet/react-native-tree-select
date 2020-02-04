@@ -282,7 +282,7 @@ export default class TreeSelect extends Component {
     const { data } = this.props;
     return (
       <View style={styles.container}>
-        this._renderSearchBar()
+        {this._renderSearchBar()}
         <FlatList
           keyExtractor={(item, i) => i.toString()}
           style={{ flex: 1, marginVertical: 5, paddingHorizontal: 15 }}
