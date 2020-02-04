@@ -219,7 +219,7 @@ export default class TreeSelect extends Component {
    * Set status to nodes matching criteria
    */
   getRootFilters() {
-    const { searchValue } = this.state;
+    const { nodesStatus, searchValue } = this.state;
     const {data} = this.props;
 
     const filteredItems = data.reduce( (acc, child) => [...acc, ...this.getFilters(child)], []);
