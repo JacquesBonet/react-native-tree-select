@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, TextInput, FlatList, Text, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { breadthFirstRecursion } from '../utils/menutransform';
+import {layoutSize} from "../utils/layout";
 
 const styles = StyleSheet.create({
   container: {
@@ -9,11 +10,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   textName: {
-    fontSize: 14,
+    fontSize: layoutSize.LAYOUT_14,
     marginLeft: 5
   },
   contentContainer: {
-    paddingBottom: 20,
+    paddingBottom: layoutSize.LAYOUT_18,
     backgroundColor: 'white',
   },
   collapseIcon: {
@@ -171,6 +172,7 @@ export default class TreeSelect extends Component {
   };
 
   _collapseNeigbour( item) {
+    const { data } = this.props;
     const routes = this._find(data, item.parentId);
 
     routes[routes.length - 1].children.map(neigbour => neigbour !== item && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
@@ -269,7 +271,7 @@ export default class TreeSelect extends Component {
       <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 5,
         borderColor: '#cccccc' }}>
         <TextInput
-          style={{ height: 30, paddingHorizontal: 6, flex: 1 }}
+          style={{ height: layoutSize.LAYOUT_30, fontSize: layoutSize.LAYOUT_15, paddingHorizontal: 6, flex: 1 }}
           value={searchValue}
           autoCapitalize="none"
           underlineColorAndroid="transparent"
@@ -280,7 +282,7 @@ export default class TreeSelect extends Component {
           placeholderTextColor="#e9e5e1"
           onChangeText={(text) => this._onChangeText('searchValue', text)}
         />
-        <TouchableOpacity onPress={this._onSearch} style={{ backgroundColor: "#ff880050", borderTopRighttRadius: 5, borderBottomRightRadius: 5 }} >
+        <TouchableOpacity onPress={this._onSearch} style={{ backgroundColor: "#ff8800", borderTopRighttRadius: 5, borderBottomRightRadius: 5, height: layoutSize.LAYOUT_30 }} >
           <Ionicons name="ios-search" style={{ fontSize: 24, marginHorizontal: 5 }} />
         </TouchableOpacity>
       </View>
