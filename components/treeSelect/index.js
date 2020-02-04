@@ -196,12 +196,9 @@ export default class TreeSelect extends Component {
       const nodesStatus = new Map(this.state.nodesStatus);
       nodesStatus.set(item && item.id, false); // toggle
 
-      this.setState((state) => {
-        this.setState( {
-          nodesStatus,
-        })
-      });
-    });
+      this.setState( {
+        nodesStatus,
+      })
   }
 
   /**
