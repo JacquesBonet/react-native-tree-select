@@ -98,6 +98,8 @@ export default class TreeSelect extends Component {
     const { data, selectType, leafCanBeSelected } = this.props;
     const { currentNode } = this.state;
     const routes = this._find(data, item.id);
+
+    this._collapseNeigbour(item);
     this.setState((state) => {
       const nodesStatus = new Map(state.nodesStatus);
       nodesStatus.set(item && item.id, !nodesStatus.get(item && item.id)); // toggle
@@ -111,7 +113,6 @@ export default class TreeSelect extends Component {
         }
         return { currentNode: tempCurrentNode, nodesStatus };
       } else {
-        this._collapseNeigbour(item);
         if (leafCanBeSelected) {
           return { nodesStatus };
         }
@@ -191,9 +192,11 @@ export default class TreeSelect extends Component {
     let routes = this._find(data, item);
     const parent = item.parentId === "owner"
         ? data
-        : routes[routes.length - 1]
+        : routes.length
+          ? routes[routes.length - 1]
+          : []
 
-    parent.map(neigbour => neigbour !== item && neigbour.children && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
+    parent && parent.map(neigbour => neigbour !== item && neigbour.children && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
   }
 
   matchStackFilter( item) {
