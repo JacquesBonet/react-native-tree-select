@@ -320,7 +320,7 @@ export default class TreeSelect extends Component {
           placeholderTextColor="#e9e5e1"
           onChangeText={(text) => this._onChangeText('searchValue', text)}
         />
-        <TouchableOpacity onPress={this._onSearch} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: "#ff880050", borderTopRighttRadius: 5, borderBottomRightRadius: 5, height: layoutSize.LAYOUT_34 }} >
+        <TouchableOpacity onPress={this._onSearch} style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: "#ff8800", borderTopRighttRadius: 5, borderBottomRightRadius: 5, height: layoutSize.LAYOUT_34 }} >
           <Ionicons name="ios-search" style={{ color: "#ffffff", fontSize: 24, marginHorizontal: 5 }} />
         </TouchableOpacity>
       </View>
