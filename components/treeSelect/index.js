@@ -205,6 +205,7 @@ export default class TreeSelect extends Component {
 
   getRootFilters() {
     const { searchValue } = this.state;
+    const {data} = this.props;
 
     const filteredItems = data.children.reduce( (acc, child) => [...acc, ...this.getFilters(child)], []);
 
