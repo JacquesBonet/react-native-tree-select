@@ -189,12 +189,11 @@ export default class TreeSelect extends Component {
   _collapseNeigbour( item) {
     const { data } = this.props;
     let routes = this._find(data, item);
+    const parent = item.parentId === "owner"
+        ? data
+        : routes[routes.length - 1]
 
-    const {children = []} = routes.length
-    ? routes[routes.length - 1]
-    : data;
-
-    children.map(neigbour => neigbour !== item && neigbour.children && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
+    parent.map(neigbour => neigbour !== item && neigbour.children && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
   }
 
   matchStackFilter( item) {
@@ -207,7 +206,7 @@ export default class TreeSelect extends Component {
     const { searchValue } = this.state;
     const {data} = this.props;
 
-    const filteredItems = data.children.reduce( (acc, child) => [...acc, ...this.getFilters(child)], []);
+    const filteredItems = data.reduce( (acc, child) => [...acc, ...this.getFilters(child)], []);
 
     filteredItems.map(item => nodesStatus.set(item.id, true));
   }
