@@ -179,6 +179,8 @@ export default class TreeSelect extends Component {
   }
 
   showRow( item) {
+    const { searchValue } = this.state;
+
     return item.name.match(searchValue) || (item.children && item.children.reduce( (acc, child) => acc || this.showRows(child), false))
   }
 
