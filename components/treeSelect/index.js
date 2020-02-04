@@ -194,7 +194,7 @@ export default class TreeSelect extends Component {
         return;
 
       const nodesStatus = new Map(this.state.nodesStatus);
-      nodesStatus.set(item && item.id, false); // toggle
+      nodesStatus.set(neigbour.id, false); // toggle
 
       this.setState( {
         nodesStatus,
@@ -220,9 +220,11 @@ export default class TreeSelect extends Component {
     const { nodesStatus, searchValue } = this.state;
     const {data} = this.props;
 
-    const filteredItems = data.reduce( (acc, child) => [...acc, ...this.getFilters(child, searchValue)], []);
+    if (searchValue.length) {
+      const filteredItems = data.reduce((acc, child) => [...acc, ...this.getFilters(child, searchValue)], []);
 
-    filteredItems.map(item => nodesStatus.set(item.id, true));
+      filteredItems.map(item => nodesStatus.set(item.id, true));
+    }
   }
 
   /**
@@ -236,7 +238,7 @@ export default class TreeSelect extends Component {
 
     if (match) {
       return item.children
-        ? [ item, ...item.children.reduce( (acc, child) => acc || this.matchFilter(child), [])]
+        ? [ item, ...item.children.reduce( (acc, child) => acc || this.getFilters(child, searchValue), [])]
         : [item]
     }
     return [];
