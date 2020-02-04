@@ -123,6 +123,21 @@ export default class TreeSelect extends Component {
     });
   };
 
+  expend = ({ e, item }) => { // eslint-disable-line
+    const { data, selectType, leafCanBeSelected } = this.props;
+    const { currentNode } = this.state;
+    const routes = this._find(data, item.id);
+    this.setState((state) => {
+      const nodesStatus = new Map(state.nodesStatus);
+      nodesStatus.set(item && item.id, true); // toggle
+
+      return { nodesStatus };
+    }, () => {
+      const { onClick } = this.props;
+      onClick && onClick({ item, routes, currentNode: this.state.currentNode });
+    });
+  };
+
   _onClickLeaf = ({ e, item }) => { // eslint-disable-line
     const { onClickLeaf, onClick, selectType, leafCanBeSelected } = this.props;
     const { data } = this.props;
@@ -173,7 +188,7 @@ export default class TreeSelect extends Component {
 
   _collapseNeigbour( item) {
     const { data } = this.props;
-    const routes = this._find(data, item.parentId);
+    const routes = this._find(data, item);
 
     if (!routes.length)
       return;
@@ -183,22 +198,27 @@ export default class TreeSelect extends Component {
     children.map(neigbour => neigbour !== item && neigbour.children && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
   }
 
-  _expandSearch( item) {
-    const { data } = this.props;
-    const routes = this._find(data, item.parentId);
-
-    if (!routes.length)
-      return;
-
-    const {children = []} = routes[routes.length - 1];
-
-    children.map(neigbour => neigbour !== item && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
-  }
-
-  filterRow( item) {
+  matchStackFilter( item) {
     const { searchValue } = this.state;
 
-    return item.name.match(searchValue) || (item.children && item.children.reduce( (acc, child) => acc || this.filterRow(child), false))
+    return item.name.match(searchValue) || (item.children && item.children.reduce( (acc, child) => acc || this.matchStackFilter(child), false))
+  }
+
+  getRootFilters() {
+    const { searchValue } = this.state;
+
+    const filteredItems = data.children.reduce( (acc, child) => [...acc, ...this.getFilters(child)], []);
+
+    filteredItems.map(item => nodesStatus.set(item.id, true));
+  }
+
+  getFilters(item) {
+    const { searchValue } = this.state;
+    const match = item.name.match(searchValue);
+
+    return match
+        ? [ item, ...(item.children && item.children.reduce( (acc, child) => acc || this.matchFilter(child), []))]
+        : [];
   }
 
   _renderRow = ({ item }) => {
@@ -213,7 +233,7 @@ export default class TreeSelect extends Component {
     const selectedColor = selectedItemStyle && selectedItemStyle.color;
     const isCurrentNode = selectType === 'multiple' ? currentNode.includes(item.id) : (currentNode === item.id);
 
-    if (!this.filterRow(item))
+    if (!this.matchStackFilter(item))
       return null;
 
     if (item && item.children && item.children.length) {
@@ -280,6 +300,7 @@ export default class TreeSelect extends Component {
     this.setState({
       [key]: value
     });
+    getRootFilters();
   };
 
   _renderSearchBar = () => {
