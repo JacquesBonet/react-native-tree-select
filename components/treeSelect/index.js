@@ -169,9 +169,13 @@ export default class TreeSelect extends Component {
   };
 
   _collapseNeigbour( item) {
-    const routes = this._find(data, item.parentId);
+    const routes = this._find(data, item.id);
 
-    routes.map(neigbour => neigbour !== item && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
+    routes[routes.length - 1].children.map(neigbour => neigbour !== item && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
+  }
+
+  showRow( item) {
+    return item.name.match(searchValue) || (item.children && item.children.reduce( (acc, child) => acc || this.showRow(child), false))
   }
 
   _renderRow = ({ item }) => {
@@ -186,7 +190,7 @@ export default class TreeSelect extends Component {
     const selectedColor = selectedItemStyle && selectedItemStyle.color;
     const isCurrentNode = selectType === 'multiple' ? currentNode.includes(item.id) : (currentNode === item.id);
 
-    if (!item.name.match( searchValue))
+    if (!this.showRow(item))
       return null;
 
     if (item && item.children && item.children.length) {
@@ -259,9 +263,9 @@ export default class TreeSelect extends Component {
     const { searchValue } = this.state;
     return (
       <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 5,
-        borderColor: '#555', marginHorizontal: 10, }}>
+        borderColor: '#aaaaaa', marginHorizontal: 10, }}>
         <TextInput
-          style={{ height: 38, paddingHorizontal: 5, flex: 1 }}
+          style={{ height: 32, paddingHorizontal: 5, flex: 1 }}
           value={searchValue}
           autoCapitalize="none"
           underlineColorAndroid="transparent"
@@ -272,8 +276,8 @@ export default class TreeSelect extends Component {
           placeholderTextColor="#e9e5e1"
           onChangeText={(text) => this._onChangeText('searchValue', text)}
         />
-        <TouchableOpacity onPress={this._onSearch}>
-          <Ionicons name="ios-search" style={{ fontSize: 25, marginHorizontal: 5 }} />
+        <TouchableOpacity onPress={this._onSearch} style={{ backgroundColor: "#ff880050"}} >
+          <Ionicons name="ios-search" style={{ fontSize: 22, marginHorizontal: 5 }} />
         </TouchableOpacity>
       </View>
     );
