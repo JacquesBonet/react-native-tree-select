@@ -267,9 +267,9 @@ export default class TreeSelect extends Component {
     const { searchValue } = this.state;
     return (
       <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 5,
-        borderColor: '#aaaaaa', marginHorizontal: 10, }}>
+        borderColor: '#cccccc', marginHorizontal: 10, }}>
         <TextInput
-          style={{ height: 32, paddingHorizontal: 5, flex: 1 }}
+          style={{ height: 28, paddingHorizontal: 5, flex: 1 }}
           value={searchValue}
           autoCapitalize="none"
           underlineColorAndroid="transparent"
@@ -281,7 +281,7 @@ export default class TreeSelect extends Component {
           onChangeText={(text) => this._onChangeText('searchValue', text)}
         />
         <TouchableOpacity onPress={this._onSearch} style={{ backgroundColor: "#ff880050"}} >
-          <Ionicons name="ios-search" style={{ fontSize: 22, marginHorizontal: 5 }} />
+          <Ionicons name="ios-search" style={{ fontSize: 20, marginHorizontal: 5 }} />
         </TouchableOpacity>
       </View>
     );
