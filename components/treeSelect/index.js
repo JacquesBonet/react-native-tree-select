@@ -177,7 +177,7 @@ export default class TreeSelect extends Component {
    * @param item
    * @private
    */
-  _collapseNeigbour( item) {
+  _collapseNeigbour = ( item) => {
     const { data } = this.props;
     let routes = this._find(data, item);
     const parent = item.parentId === "owner"
@@ -199,6 +199,7 @@ export default class TreeSelect extends Component {
       this.setState( {
         nodesStatus,
       })
+  });
   }
 
   /**
@@ -206,7 +207,7 @@ export default class TreeSelect extends Component {
    * @param item
    * @returns {RegExpMatchArray | Promise<Response | undefined> | * | boolean}
    */
-  matchStackFilter( item) {
+  matchStackFilter = ( item) => {
     const { searchValue } = this.state;
 
     return item.name.match(searchValue) || (item.children && item.children.reduce( (acc, child) => acc || this.matchStackFilter(child), false))
@@ -215,22 +216,30 @@ export default class TreeSelect extends Component {
   /**
    * Set status to nodes matching criteria
    */
-  getRootFilters() {
+  getRootFilters = () => {
     const { nodesStatus, searchValue } = this.state;
     const {data} = this.props;
 
-    const filteredItems = data.reduce( (acc, child) => [...acc, ...this.getFilters(child)], []);
+    const filteredItems = data.reduce( (acc, child) => [...acc, ...this.getFilters(child, searchValue)], []);
 
     filteredItems.map(item => nodesStatus.set(item.id, true));
   }
 
-  getFilters(item) {
-    const { searchValue } = this.state;
+  /**
+   * return the set of child items matching searchValue
+   * @param item
+   * @param searchValue
+   * @returns {*[]}
+   */
+  getFilters = (item, searchValue) => {
     const match = item.name.match(searchValue);
 
-    return match
-        ? [ item, ...(item.children && item.children.reduce( (acc, child) => acc || this.matchFilter(child), []))]
-        : [];
+    if (match) {
+      return item.children
+        ? [ item, ...item.children.reduce( (acc, child) => acc || this.matchFilter(child), [])]
+        : [item]
+    }
+    return [];
   }
 
   _renderRow = ({ item }) => {
