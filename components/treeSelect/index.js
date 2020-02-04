@@ -100,6 +100,7 @@ export default class TreeSelect extends Component {
     this.setState((state) => {
       const nodesStatus = new Map(state.nodesStatus);
       nodesStatus.set(item && item.id, !nodesStatus.get(item && item.id)); // toggle
+
       // 计算currentNode的内容
       if (selectType === 'multiple') {
         const tempCurrentNode = currentNode.includes(item.id) ?
@@ -109,6 +110,7 @@ export default class TreeSelect extends Component {
         }
         return { currentNode: tempCurrentNode, nodesStatus };
       } else {
+        this._collapseNeigbour(item);
         if (leafCanBeSelected) {
           return { nodesStatus };
         }
@@ -174,14 +176,10 @@ export default class TreeSelect extends Component {
     routes[routes.length - 1].children.map(neigbour => neigbour !== item && neigbour.children.length && this._onPressCollapse( { e: null, item: neigbour}));
   }
 
-  showRows( items) {
-    return items.reduce( (acc, child) => acc || this.showRow(child), false)
-  }
-
   showRow( item) {
     const { searchValue } = this.state;
 
-    return item.name.match(searchValue) || (item.children && item.children.reduce( (acc, child) => acc || this.showRows(child), false))
+    return item.name.match(searchValue) || (item.children && item.children.reduce( (acc, child) => acc || this.showRow(child), false))
   }
 
   _renderRow = ({ item }) => {
@@ -269,9 +267,9 @@ export default class TreeSelect extends Component {
     const { searchValue } = this.state;
     return (
       <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: 5,
-        borderColor: '#cccccc', marginHorizontal: 10, }}>
+        borderColor: '#cccccc' }}>
         <TextInput
-          style={{ height: 28, paddingHorizontal: 5, flex: 1 }}
+          style={{ height: 30, paddingHorizontal: 6, flex: 1 }}
           value={searchValue}
           autoCapitalize="none"
           underlineColorAndroid="transparent"
@@ -282,8 +280,8 @@ export default class TreeSelect extends Component {
           placeholderTextColor="#e9e5e1"
           onChangeText={(text) => this._onChangeText('searchValue', text)}
         />
-        <TouchableOpacity onPress={this._onSearch} style={{ backgroundColor: "#ff880050"}} >
-          <Ionicons name="ios-search" style={{ fontSize: 20, marginHorizontal: 5 }} />
+        <TouchableOpacity onPress={this._onSearch} style={{ backgroundColor: "#ff880050", borderTopRighttRadius: 5, borderBottomRightRadius: 5 }} >
+          <Ionicons name="ios-search" style={{ fontSize: 24, marginHorizontal: 5 }} />
         </TouchableOpacity>
       </View>
     );
